@@ -1,18 +1,16 @@
 "use client";
-// migrating new dashboard from "the graph" branch
-import Button from '../../components/Button';
-import TimeDataView from '../../components/TimeDataView';
-import GraphDemo from '../../components/GraphDemo';
-import ShiftsGraph from '../../components/ShiftsGraph';
-import Heatmap from '../../components/Heatmap';
+import TopNav from '../../ui/TopNav';
+import TimeDataView from './components/TimeDataView';
+import ShiftsGraph from './components/ShiftsGraph';
+import Heatmap from './components/Heatmap';
 import { useEffect, useState } from "react";
 import { supabase } from '../../lib/supabaseClient';
-import ProfileCompletionPrompt from '../../components/ProfileCompletionPrompt';
-import ProfilePanel from '../../components/ProfilePanel';
-import Spreadsheet from '../../components/Spreadsheet';
+import ProfileCompletionPrompt from './components/ProfileCompletionPrompt';
+import ProfilePanel from './components/ProfilePanel';
+import Spreadsheet from './components/Spreadsheet';
 import { getUserWages } from '../../utils/wageUtils';
 import { getUserProfile } from '../../utils/profileUtils';
-import Test from '../../components/test';
+import RecentShifts from './components/RecentShifts';
 import { ShiftsProvider } from '../../context/ShiftsContext';
 
 
@@ -66,7 +64,6 @@ export default function Dashboard() {
                     setGreetingName(user.email?.split('@')[0] || 'Welcome');
                 }
             } catch (e) {
-                // non-fatal; just skip prompt on error
                 console.warn('Failed checking wages:', e?.message);
             }
         };
@@ -120,74 +117,31 @@ export default function Dashboard() {
                 userId={currentUser?.id}
             />
         )}
-        {/* Header */}
-            <header className="bg-surface shadow-sm border-b border-border-light">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-6">
-                        <div>
-                            <h1 className="text-3xl font-bold text-text-primary">{`Welcome${greetingName ? `, ${greetingName}` : ''}`}</h1>
-                            <p className="text-text-secondary">Personal Work Schedule Management</p>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            {/* My Profile */}
-                            <Button 
-                                onClick={() => setShowProfilePanel(true)}
-                                variant="secondary"
-                            >
-                                My Profile
-                            </Button>
+           <TopNav />
 
-                            {/* Add New Shift */}
-                            <Button 
-                                onClick={() => window.location.href = "/addShift"}
-                                variant="primary"
-                            >
-                                Add New Shift
-                            </Button>
-
-                            {/* Logout Button */}
-                            <Button
-                                onClick={handleLogout}
-                                variant='noOutlineBlack'
-                            >
-                                Logout
-                            </Button>
-
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <ShiftsProvider>
+           <ShiftsProvider>
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 </div>
 
-                {/* Content Grid */}
-                <p className='text-primary text-sm w-full mx-auto'>Maybe this content grid could be useful!?</p>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                {/* Greeting */}
+                <div className="mb-6">
+                  <h1 className="text-2xl font-bold text-text-primary">{`Welcome${greetingName ? `, ${greetingName}` : ''}`}</h1>
+                  <p className="text-text-secondary">Personal Work Schedule Management</p>
+                </div>
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Recent Shifts */}
                     <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Shifts</h2>
                         <div className="space-y-4">
-                        <Test />
-                        </div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-accent">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-                        <div className="space-y-3">
-                        {/* ...existing code... */}
+                        <RecentShifts />
                         </div>
                     </div>
                 </div>
 
 
 
-                {/* Time Data Analytics Section with Stale-While-Revalidate Graph */}
                 <TimeDataView 
                     title="Shifts Analytics"
                     onTimeRangeChange={handleTimeRangeChange}
@@ -201,14 +155,13 @@ export default function Dashboard() {
                         className="m-4"
                     />
                 </TimeDataView>
-                {/*standard box for heatmap*/}
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-accent mt-8">
                    <Heatmap />
                    
                 </div>
-                <div className="bg-white p-12 rounded-lg shadow-sm border border-accent mt-8">
-                <h2 className="flex items-center justify-center text-xl font-semibold text-gray-900 mb-4">Spreadsheet View</h2>
-                    <Spreadsheet />
+                <div className="bg-white p-8 rounded-lg shadow-sm border border-accent mt-8">
+                  <div className="mb-2 text-sm font-medium tracking-wide text-gray-500 uppercase">Spreadsheet</div>
+                  <Spreadsheet />
                 </div>
                 
 
